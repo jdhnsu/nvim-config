@@ -1,0 +1,142 @@
+" =========================
+" 基础插件管理设置
+" =========================
+call plug#begin('~/.local/share/nvim/plugged')
+
+" ---- 文件与外观 ----
+Plug 'preservim/nerdtree'                 " 文件树浏览器
+Plug 'vim-airline/vim-airline'            " 状态栏美化
+Plug 'vim-airline/vim-airline-themes'     " 状态栏主题
+Plug 'nvim-tree/nvim-web-devicons'        " 图标支持
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' } " 高级配色方案
+Plug 'lukas-reineke/indent-blankline.nvim' " 缩进线美化
+Plug 'sheerun/vim-polyglot'               " 多语言语法支持（与 Treesitter 兼容）
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " 更好的语法高亮
+
+" ---- 开发辅助 ----
+Plug 'preservim/nerdcommenter'            " 快速注释
+Plug 'neoclide/coc.nvim', {'branch': 'release'}  " 自动补全引擎
+
+call plug#end()
+
+" =========================
+" 基础编辑设置
+" =========================
+set number                      " 显示行号
+set relativenumber              " 相对行号
+set expandtab                   " 将Tab转换为空格
+set tabstop=4                   " Tab宽度为4个空格
+set shiftwidth=4                " 自动缩进时使用4个空格
+set softtabstop=4               " 编辑时按Tab插入4个空格
+set autoindent                  " 自动缩进
+set smartindent                 " 智能缩进
+set nowrap                      " 不自动换行
+set encoding=utf-8              " 设置编码为UTF-8
+set clipboard=unnamedplus       " 使用系统剪贴板
+set termguicolors               " 启用真彩色支持
+set background=dark             " 深色背景
+syntax enable
+syntax on
+filetype plugin indent on
+
+" =========================
+" 搜索与窗口设置
+" =========================
+set ignorecase                  " 搜索忽略大小写
+set smartcase                   " 智能大小写匹配
+set splitbelow                  " 水平分割窗口时新窗口在下方
+set splitright                  " 垂直分割窗口时新窗口在右侧
+
+" =========================
+" 透明背景设置
+" =========================
+autocmd vimenter * hi Normal ctermbg=none guibg=none
+autocmd vimenter * hi NonText ctermbg=none guibg=none
+autocmd vimenter * hi NormalNC ctermbg=none guibg=none
+autocmd vimenter * hi SignColumn ctermbg=none guibg=none
+autocmd vimenter * hi LineNr ctermbg=none guibg=none
+autocmd vimenter * hi FoldColumn ctermbg=none guibg=none
+
+" =========================
+" 插件外观设置
+" =========================
+let g:tokyonight_transparent = 1
+let g:tokyonight_style = "storm"
+colorscheme tokyonight
+
+" airline 状态栏主题
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'tokyonight'
+
+" =========================
+" 快捷键设置
+" =========================
+" jj/jk/kj 返回正常模式
+inoremap jj <Esc>
+inoremap jk <Esc>
+inoremap kj <Esc>
+
+" 打开 NERDTree
+nnoremap <A-n> :NERDTreeToggle<CR>
+
+" 格式化快捷键 Alt + f
+xmap <silent> <A-f> <Plug>(coc-format-selected)
+nmap <silent> <A-f> <Plug>(coc-format-selected)
+
+" 查看诊断 Alt + o
+nmap <silent> <A-o> :CocList diagnostics<CR>
+
+" 跳转到定义 gd
+nmap <silent> gd <Plug>(coc-definition)
+
+" 查看文档 K
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" =========================
+" coc.nvim 设置
+" =========================
+set hidden
+set nobackup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+
+" 智能回车键
+inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Tab 键补全
+inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1] =~# '\s'
+endfunction
+
+autocmd CursorHold * silent call CocActionAsync('diagnosticInfo')
+
+" =========================
+" Treesitter 与美化设置
+" =========================
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "all",
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
+require("indent_blankline").setup {
+  show_current_context = true,
+  show_current_context_start = true,
+}
+EOF
