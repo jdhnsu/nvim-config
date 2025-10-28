@@ -59,6 +59,54 @@ require("packer").startup(function(use)
   -- 缩进线（新版）
   use "lukas-reineke/indent-blankline.nvim"
 
+  -- Markdown 增强支持
+  use {
+    "preservim/vim-markdown",
+    ft = "markdown",
+    requires = {
+      "godlygeek/tabular"
+    },
+    config = function()
+      vim.g.vim_markdown_folding_disabled = 1
+      vim.g.vim_markdown_conceal = 0
+      vim.g.vim_markdown_conceal_code_blocks = 0
+      vim.g.vim_markdown_frontmatter = 1
+      vim.g.vim_markdown_auto_insert_bullets = 0
+      vim.g.vim_markdown_new_list_item_indent = 0
+    end
+  }
+
+  -- 添加 toggleterm 插件
+  use {
+    "akinsho/toggleterm.nvim",
+    tag = '*',
+    config = function()
+      require("toggleterm").setup {
+        size = 20,
+        open_mapping = [[<c-\>]],
+        hide_numbers = true,
+        shade_filetypes = {},
+        shade_terminals = true,
+        shading_factor = 2,
+        start_in_insert = true,
+        insert_mappings = true,
+        persist_size = true,
+        direction = 'horizontal',  -- 你也可以改为 'float' 获得悬浮终端
+        close_on_exit = true,
+        shell = vim.o.shell,
+        float_opts = {
+          border = 'curved',
+          winblend = 0,
+          highlights = {
+            border = 'Normal',
+            background = 'Normal',
+          },
+        },
+      }
+    end
+  }
+
+
   if packer_bootstrap then
     require("packer").sync()
   end

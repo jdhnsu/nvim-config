@@ -109,6 +109,12 @@ _G.packer_plugins = {
     path = "/home/jdh/.local/share/nvim/site/pack/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
   },
+  ["toggleterm.nvim"] = {
+    config = { "\27LJ\2\2ö\2\0\0\4\0\f\0\0176\0\0\0'\1\1\0B\0\2\0029\0\2\0005\1\3\0004\2\0\0=\2\4\0016\2\5\0009\2\6\0029\2\a\2=\2\a\0015\2\b\0005\3\t\0=\3\n\2=\2\v\1B\0\2\1K\0\1\0\15float_opts\15highlights\1\0\2\15background\vNormal\vborder\vNormal\1\0\2\rwinblend\3\0\vborder\vcurved\nshell\6o\bvim\20shade_filetypes\1\0\n\20shade_terminals\2\17open_mapping\n<c-\\>\19shading_factor\3\2\17persist_size\2\14direction\15horizontal\18close_on_exit\2\20start_in_insert\2\20insert_mappings\2\tsize\3\20\17hide_numbers\2\nsetup\15toggleterm\frequire\0" },
+    loaded = true,
+    path = "/home/jdh/.local/share/nvim/site/pack/packer/start/toggleterm.nvim",
+    url = "https://github.com/akinsho/toggleterm.nvim"
+  },
   ["tokyonight.nvim"] = {
     loaded = true,
     path = "/home/jdh/.local/share/nvim/site/pack/packer/start/tokyonight.nvim",
@@ -132,6 +138,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: toggleterm.nvim
+time([[Config for toggleterm.nvim]], true)
+try_loadstring("\27LJ\2\2ö\2\0\0\4\0\f\0\0176\0\0\0'\1\1\0B\0\2\0029\0\2\0005\1\3\0004\2\0\0=\2\4\0016\2\5\0009\2\6\0029\2\a\2=\2\a\0015\2\b\0005\3\t\0=\3\n\2=\2\v\1B\0\2\1K\0\1\0\15float_opts\15highlights\1\0\2\15background\vNormal\vborder\vNormal\1\0\2\rwinblend\3\0\vborder\vcurved\nshell\6o\bvim\20shade_filetypes\1\0\n\20shade_terminals\2\17open_mapping\n<c-\\>\19shading_factor\3\2\17persist_size\2\14direction\15horizontal\18close_on_exit\2\20start_in_insert\2\20insert_mappings\2\tsize\3\20\17hide_numbers\2\nsetup\15toggleterm\frequire\0", "config", "toggleterm.nvim")
+time([[Config for toggleterm.nvim]], false)
 
 _G._packer.inside_compile = false
 if _G._packer.needs_bufread == true then

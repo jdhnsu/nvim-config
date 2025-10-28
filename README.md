@@ -30,6 +30,7 @@ end)
 | `nvim-treesitter/nvim-treesitter` | 更好的语法高亮 |
 | `sheerun/vim-polyglot` | 多语言支持 |
 | `lukas-reineke/indent-blankline.nvim` | 显示缩进引导线 |
+| `akinsho/toggleterm.nvim`   |	内置终端支持 |
 
 ##### 配色主题整合
 
@@ -56,6 +57,7 @@ end)
 | `K` | Normal | 查看文档提示 |
 | `<A-o>` | Normal | 显示诊断信息列表 |
 | `<A-f>` | Normal / Visual | 格式化选中区域 |
+| `C+\` | Normal | 内置终端 |
 
 ##### 其他常用操作
 由于配置未显示 NERDTree 或其它文件浏览器的具体按键映射，通常默认使用命令模式输入`:NERDTreeToggle`来开启/关闭文件树。
@@ -77,4 +79,4 @@ end)
 5. **项目管理**
    - 加入 [project.nvim](https://github.com/ahmedkhalf/project.nvim) 实现项目工作区管理和自动会话恢复。
 
-这些扩展可以进一步提升开发效率并丰富 Neovim 的生态体验。
+这些扩展可以进一步提升开发效率并丰富 Neovim 的生态体验.
