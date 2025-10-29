@@ -120,9 +120,9 @@ require("packer").startup(function(use)
   config = function()
     local ok, smear_cursor = pcall(require, "smear_cursor")
     if ok then
-      smear_cursor.setup {
+      smear_cursor.setup ({
         cursor_color = "DABA789F",
-      }
+      })
     else
       print("无法加载 smear-cursor 插件")
     end
@@ -195,8 +195,9 @@ vim.api.nvim_set_keymap("i", "kj", "<Esc>", { noremap = true })
 -----------------------------------------------------------
 -- 主题
 -----------------------------------------------------------
+-- ...existing code...
 vim.cmd([[colorscheme tokyonight]])
-vim.g.airline_theme = "tokyonight"
+vim.g.airline_theme = "onedark"  -- 将 airline 主题设置为已安装的主题名
 
 -----------------------------------------------------------
 -- coc.nvim 智能补全配置
