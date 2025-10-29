@@ -1,111 +1,118 @@
 -----------------------------------------------------------
--- 插件管理（packer）
------------------------------------------------------------
------------------------------------------------------------
--- 插件管理（packer）
+-- 自动安装 packer.nvim（插件管理器）
 -----------------------------------------------------------
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-
-  -- 若目录不存在，则自动克隆 packer
   if fn.empty(fn.glob(install_path)) > 0 then
-    print("⏬ 正在安装 packer.nvim 到 " .. install_path)
-    fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-
-    -- 手动创建目录并加载 packer
+    print("⏬ 正在安装 packer.nvim ...")
+    fn.system({
+      "git", "clone", "--depth", "1",
+      "https://github.com/wbthomason/packer.nvim",
+      install_path
+    })
     vim.cmd("packadd packer.nvim")
-    print("✅ packer 安装完成，请重新打开 Neovim")
+    print("✅ packer 安装完成，请重启 Neovim")
     return true
   end
-
-  -- 若存在则加载
-  if vim.fn.isdirectory(install_path) == 1 then
-    vim.cmd("packadd packer.nvim")
-  end
-
   return false
 end
 
 local packer_bootstrap = ensure_packer()
 
+-----------------------------------------------------------
+-- 插件列表
+-----------------------------------------------------------
 require("packer").startup(function(use)
-  -- 插件管理器
   use "wbthomason/packer.nvim"
 
-  -- 状态栏美化
+  -- 🌈 界面美化
   use "vim-airline/vim-airline"
   use "vim-airline/vim-airline-themes"
-
-  -- 主题
   use "folke/tokyonight.nvim"
   use "morhetz/gruvbox"
 
-  -- 文件树
+  -- 📁 文件树
   use "preservim/nerdtree"
 
-  -- 代码注释
+  -- 💬 代码注释
   use "preservim/nerdcommenter"
 
-  -- 自动补全引擎
+  -- ⚙️ 自动补全（强大）
   use { "neoclide/coc.nvim", branch = "release" }
 
-  -- Treesitter 语法高亮
-  use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }
-
-  -- 多语言支持
-  use "sheerun/vim-polyglot"
-
-  -- 缩进线（新版）
-  use "lukas-reineke/indent-blankline.nvim"
-
-  -- Markdown 增强支持
+  -- 🌳 Treesitter 语法高亮
   use {
-    "preservim/vim-markdown",
-    ft = "markdown",
-    requires = {
-      "godlygeek/tabular"
-    },
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
     config = function()
-      vim.g.vim_markdown_folding_disabled = 1
-      vim.g.vim_markdown_conceal = 0
-      vim.g.vim_markdown_conceal_code_blocks = 0
-      vim.g.vim_markdown_frontmatter = 1
-      vim.g.vim_markdown_auto_insert_bullets = 0
-      vim.g.vim_markdown_new_list_item_indent = 0
-    end
+      local ok, configs = pcall(require, "nvim-treesitter.configs")
+      if ok then
+        configs.setup {
+          ensure_installed = { "c", "cpp", "lua", "python", "javascript", "html", "css" },
+          sync_install = false,
+          highlight = { enable = true },
+        }
+      end
+    end,
   }
 
-  -- 添加 toggleterm 插件
+  -- 📄 多语言语法支持
+  use "sheerun/vim-polyglot"
+
+  -- 🧱 indent-blankline（新版）
+  use {
+    "lukas-reineke/indent-blankline.nvim",
+    config = function()
+      local ok, ibl = pcall(require, "ibl")
+      if ok then
+        ibl.setup {
+          indent = { char = "│" },
+          scope = { enabled = true, show_start = true },
+        }
+      end
+    end,
+  }
+
+  -- -- 📝 Markdown 支持增强
+  -- use {
+  --   "preservim/vim-markdown",
+  --   ft = "markdown",
+  --   requires = { "godlygeek/tabular" },
+  --   config = function()
+  --     vim.g.vim_markdown_folding_disabled = 1
+  --     vim.g.vim_markdown_conceal = 0
+  --     vim.g.vim_markdown_conceal_code_blocks = 0
+  --     vim.g.vim_markdown_frontmatter = 1
+  --     vim.g.vim_markdown_auto_insert_bullets = 0
+  --     vim.g.vim_markdown_new_list_item_indent = 0
+  --   end,
+  -- }
+
+  -- 💻 toggleterm（终端）
   use {
     "akinsho/toggleterm.nvim",
-    tag = '*',
+    tag = "*",
     config = function()
       require("toggleterm").setup {
         size = 20,
         open_mapping = [[<c-\>]],
         hide_numbers = true,
-        shade_filetypes = {},
         shade_terminals = true,
         shading_factor = 2,
         start_in_insert = true,
-        insert_mappings = true,
         persist_size = true,
-        direction = 'horizontal',  -- 你也可以改为 'float' 获得悬浮终端
+        direction = "horizontal",
         close_on_exit = true,
         shell = vim.o.shell,
         float_opts = {
-          border = 'curved',
+          border = "curved",
           winblend = 0,
-          highlights = {
-            border = 'Normal',
-            background = 'Normal',
-          },
+          highlights = { border = "Normal", background = "Normal" },
         },
       }
-    end
+    end,
   }
-
 
   if packer_bootstrap then
     require("packer").sync()
@@ -116,8 +123,6 @@ end)
 -- 基础设置
 -----------------------------------------------------------
 local o = vim.opt
-
--- 编码
 o.encoding = "utf-8"
 o.fileencoding = "utf-8"
 
@@ -151,7 +156,7 @@ o.splitright = true
 -- 剪贴板
 o.clipboard = "unnamedplus"
 
--- 透明背景
+-- 启动时透明背景
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     local hl_groups = { "Normal", "NonText", "NormalNC", "SignColumn", "LineNr", "FoldColumn" }
@@ -176,14 +181,14 @@ vim.cmd([[colorscheme tokyonight]])
 vim.g.airline_theme = "tokyonight"
 
 -----------------------------------------------------------
--- coc.nvim 自动补全配置
+-- coc.nvim 智能补全配置
 -----------------------------------------------------------
 vim.opt.hidden = true
 vim.opt.cmdheight = 2
 vim.opt.updatetime = 300
 vim.opt.shortmess:append("c")
 
--- 回车智能补全
+-- 回车补全
 vim.api.nvim_set_keymap(
   "i",
   "<CR>",
@@ -192,25 +197,27 @@ vim.api.nvim_set_keymap(
 )
 
 -- Tab 补全
+_G.check_back_space = function()
+  local col = vim.fn.col(".") - 1
+  return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
+end
+
 vim.api.nvim_set_keymap(
   "i",
   "<TAB>",
   [[pumvisible() ? "\<C-n>" : v:lua.check_back_space() ? "\<TAB>" : coc#refresh()]],
   { noremap = true, silent = true, expr = true }
 )
-vim.api.nvim_set_keymap("i", "<S-TAB>", [[pumvisible() ? "\<C-p>" : "\<C-h>"]], { noremap = true, silent = true, expr = true })
+vim.api.nvim_set_keymap(
+  "i",
+  "<S-TAB>",
+  [[pumvisible() ? "\<C-p>" : "\<C-h>"]],
+  { noremap = true, silent = true, expr = true }
+)
 
-_G.check_back_space = function()
-  local col = vim.fn.col(".") - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
-end
-
--- 跳转与操作
+-- 跳转和文档
 vim.api.nvim_set_keymap("n", "gd", "<Plug>(coc-definition)", { silent = true })
 vim.api.nvim_set_keymap("n", "K", ":lua show_docs()<CR>", { silent = true })
-vim.api.nvim_set_keymap("n", "<A-o>", ":CocList diagnostics<CR>", { silent = true })
-vim.api.nvim_set_keymap("n", "<A-f>", "<Plug>(coc-format-selected)", { silent = true, expr = true })
-vim.api.nvim_set_keymap("x", "<A-f>", "<Plug>(coc-format-selected)", { silent = true, expr = true })
 
 function _G.show_docs()
   if vim.tbl_contains({ "vim", "help" }, vim.bo.filetype) then
@@ -220,35 +227,7 @@ function _G.show_docs()
   end
 end
 
-vim.api.nvim_create_autocmd("CursorHold", {
-  callback = function()
-    vim.fn.CocActionAsync("diagnosticInfo")
-  end,
-})
-
 -----------------------------------------------------------
--- Treesitter 配置（自动镜像）
+-- 完成！
 -----------------------------------------------------------
-require("nvim-treesitter.configs").setup {
-  ensure_installed = { "c", "cpp", "lua", "python", "javascript", "html", "css" },
-  sync_install = false,
-  highlight = { enable = true },
-}
-
------------------------------------------------------------
--- indent-blankline (v3, ibl)
------------------------------------------------------------
-require("ibl").setup {
-  indent = {
-    char = "│",
-  },
-  scope = {
-    enabled = true,
-    show_start = true,
-    highlight = { "Function", "Label" },
-  },
-  whitespace = {
-    highlight = { "Whitespace" },
-    remove_blankline_trail = false,
-  },
-}
+print("✨ Neovim 配置加载成功！")
