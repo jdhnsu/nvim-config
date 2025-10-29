@@ -114,10 +114,28 @@ require("packer").startup(function(use)
     end,
   }
 
+    -- 🖱️ Smear Cursor 插件
+ use {
+  "sphamba/smear-cursor.nvim",
+  config = function()
+    local ok, smear_cursor = pcall(require, "smear_cursor")
+    if ok then
+      smear_cursor.setup {
+        cursor_color = "DABA789F",
+      }
+    else
+      print("无法加载 smear-cursor 插件")
+    end
+  end,
+}
+
+
+  -- ...existing code...
   if packer_bootstrap then
     require("packer").sync()
   end
 end)
+
 
 -----------------------------------------------------------
 -- 基础设置
